@@ -1,4 +1,15 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+import fs from 'fs';
+import https from 'https';
+
+const nextConfig = {
+  reactStrictMode: true,
+  devServer: {
+    https: {
+      key: fs.readFileSync('./localhost-key.pem'),
+      cert: fs.readFileSync('./localhost.pem'),
+    },
+  },
+};
 
 export default nextConfig;
