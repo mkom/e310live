@@ -124,46 +124,51 @@ const pageSlug = () => {
                 
                     <div className="flex flex-col md:flex-row items-start gap-4">
                         {embedUrl && (
-                            <div className="mb-5 mx-auto w-full md:w-3/4 ">
-                                <div dangerouslySetInnerHTML={{ __html: `<iframe src="${embedUrl ? embedUrl : ""}" allow="picture-in-picture; fullscreen" allowfullscreen class="w-full h-48 sm:h-80 md:h-[460px]"></iframe>` }} />
-                            </div>
+                            <>
+                                <div className="mb-5 mx-auto w-full md:w-3/4 ">
+                                    <div dangerouslySetInnerHTML={{ __html: `<iframe src="${embedUrl ? embedUrl : ""}" allow="picture-in-picture; fullscreen" allowfullscreen class="w-full h-48 sm:h-80 md:h-[460px]"></iframe>` }} />
+                                </div>
+                                <Card className="h-full w-full md:w-1/4 border rounded-none">
+                                    <CardHeader floated={false} shadow={false} className="rounded-none">
+                                        <Typography
+                                        variant="small"
+                                        className="font-medium mb-3"
+                                        >
+                                        Available Streams
+                                        </Typography>
+                                    </CardHeader>
+                                    <CardBody className="flex flex-wrap items-center justify-center gap-3 pt-1">
+                                        
+                                        {Array.isArray(streamData) && streamData.map((i, index) => (
+                                            <div key={index}>
+                                                <Button 
+                                                variant="gradient" 
+                                                size="sm" 
+                                                color={embedUrl === i.embedUrl ? 'red' :'green'} 
+                                                className="flex items-center gap-1 px-2 py-1"
+                                                onClick={() => setEmbedUrl(i.embedUrl)}
+                                                >
+                                                    <TvIcon className="w-5 h-5"/>
+                                                    Stream {i.streamNo}
+                                                </Button>
+                                                
+                                            </div>
+                                        ))}
+
+                                    </CardBody>
+                                </Card>
+                            
+                            </>
+                            
                         )}
                         {!embedUrl && (
-                            <div className="mb-4">
-                                <Typography variant="small" color="red" className="text-center">
+                            <div className="mb-4  mx-auto w-full">
+                                <Typography variant="small" color="red" className="text-center ">
                                     No available streams
                                 </Typography>
                             </div>
                         )}
-                        <Card className="h-full w-full md:w-1/4 border rounded-none">
-                            <CardHeader floated={false} shadow={false} className="rounded-none">
-                                <Typography
-                                variant="small"
-                                className="font-medium mb-3"
-                                >
-                                Available Streams
-                                </Typography>
-                            </CardHeader>
-                            <CardBody className="flex flex-wrap items-center justify-center gap-3 pt-1">
-                                
-                                {Array.isArray(streamData) && streamData.map((i, index) => (
-                                    <div key={index}>
-                                        <Button 
-                                        variant="gradient" 
-                                        size="sm" 
-                                        color={embedUrl === i.embedUrl ? 'red' :'green'} 
-                                        className="flex items-center gap-1 px-2 py-1"
-                                        onClick={() => setEmbedUrl(i.embedUrl)}
-                                        >
-                                            <TvIcon className="w-5 h-5"/>
-                                            Stream {i.streamNo}
-                                        </Button>
-                                        
-                                    </div>
-                                ))}
-
-                            </CardBody>
-                        </Card>
+                        
                     </div>
                 
                     
