@@ -85,7 +85,7 @@ const pageSlug = () => {
                 <div className="container max-w-screen-xl mx-auto">
                     <Typography
                     variant="small"
-                    className="font-medium mb-4 capitalize flex items-center gap-2"
+                    className="text-blue-gray-900 font-medium mb-4 capitalize flex items-center gap-2"
                     >
                     <TvIcon className="w-6 h-6"/>
                     <span> Live Match </span>
@@ -125,7 +125,7 @@ const pageSlug = () => {
                     <div className="flex flex-col md:flex-row items-start gap-4">
                         {embedUrl && (
                             <div className="mb-5 mx-auto w-full md:w-3/4 ">
-                                <div dangerouslySetInnerHTML={{ __html: `<iframe src="${embedUrl ? embedUrl : ""}" allow="picture-in-picture; fullscreen" allowfullscreen class="w-full h-60 sm:h-96 md:h-[460px]"></iframe>` }} />
+                                <div dangerouslySetInnerHTML={{ __html: `<iframe src="${embedUrl ? embedUrl : ""}" allow="picture-in-picture; fullscreen" allowfullscreen class="w-full h-48 sm:h-80 md:h-[460px]"></iframe>` }} />
                             </div>
                         )}
                         {!embedUrl && (

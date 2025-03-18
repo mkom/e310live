@@ -12,7 +12,7 @@ export function Footer() {
         <div className="container mx-auto">
           <Typography
           variant="small"
-          className="text-center"
+          className="text-center text-blue-gray-900"
           >
             Watch live football streaming in HD for free. Enjoy Premier League, La Liga, Bundesliga, Serie A, and more. No sign-up required at e310.live!.
           </Typography>
