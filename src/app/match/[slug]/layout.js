@@ -68,6 +68,7 @@ export async function generateMetadata({ params }) {
       title: `${data[0].title} - Free Live Streaming - e310.live`,
       description: `Watch live football streaming in HD for free between ${data[0].teams?.home?.name || "Unknown"} and ${data[0].teams?.away?.name || "Unknown"} live.`,
       keywords: `${data[0].teams?.home?.name} ${data[0].title} free football live stream, watch soccer online, premier league live, la liga streams, bundesliga live, serie a live, champions league live, hd sports streaming`,
+      "theme-color": "#ffffff",
     };
   } catch (error) {
     //console.error("❌ Metadata Error:", error.message);

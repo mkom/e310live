@@ -19,6 +19,7 @@ export const metadata = {
   title: "Watch Football Live Streaming | Free HD Sports Streams - e310.live",
   description: "Watch live football streaming in HD for free. Enjoy Premier League, La Liga, Bundesliga, Serie A, and more. No sign-up required at e310.live!",
   keywords: "free football live stream, watch soccer online, premier league live, la liga streams, bundesliga live, serie a live, champions league live, hd sports streaming",
+  "theme-color": "#ffffff",
 };
 
 
