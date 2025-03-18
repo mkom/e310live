@@ -124,7 +124,7 @@ export function MatchList() {
         </div>
         
       </CardHeader>
-        <div className="flex justify-between items-center gap-2 flex-col md:flex-row px-5">
+        {/* <div className="flex justify-between items-center gap-2 flex-col md:flex-row px-5">
           <div className="w-full  ">
             <Input
               label="Search"
@@ -134,7 +134,7 @@ export function MatchList() {
             
           </div>
           
-        </div>   
+        </div>    */}
       <CardBody className="overflow-scroll px-0 py-2 ">
         <table className="mt-1 w-full table-auto text-left">
           <thead>
