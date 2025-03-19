@@ -8,8 +8,8 @@ import {
 export function Footer() {
    
     return (
-        <footer className=" w-full mx-auto max-w-screen-xl py-8 rounded-none ">
-        <div className="container mx-auto">
+        <footer className="mt-auto w-full mx-auto max-w-screen-xl py-8 rounded-none ">
+        <div className="container mx-auto max-w-lg">
           <Typography
           variant="small"
           className="text-center text-blue-gray-900"

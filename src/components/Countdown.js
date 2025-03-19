@@ -1,16 +1,18 @@
-// components/Countdown.js
 import { useState, useEffect } from "react";
-import {
-    Typography
-} from "@material-tailwind/react";
-
+import { Typography } from "@material-tailwind/react";
 
 const Countdown = ({ targetDate }) => {
   const [timeLeft, setTimeLeft] = useState(getTimeLeft(targetDate));
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft(getTimeLeft(targetDate));
+      const updatedTimeLeft = getTimeLeft(targetDate);
+      setTimeLeft(updatedTimeLeft);
+
+      // Refresh the page when the countdown reaches zero
+      if (updatedTimeLeft.days === 0 && updatedTimeLeft.hours === 0 && updatedTimeLeft.minutes === 0 && updatedTimeLeft.seconds === 0) {
+        window.location.reload();
+      }
     }, 1000);
 
     return () => clearInterval(timer);
@@ -30,9 +32,8 @@ const Countdown = ({ targetDate }) => {
 
   return (
     <Typography variant="h6" color="blue-gray">
-        {`${timeLeft.days}d ${timeLeft.hours}h ${timeLeft.minutes}m ${timeLeft.seconds}s`}
+      {`${timeLeft.days}d ${timeLeft.hours}h ${timeLeft.minutes}m ${timeLeft.seconds}s`}
     </Typography>
-    
   );
 };
 

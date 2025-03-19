@@ -2,6 +2,7 @@ import { Poppins } from "next/font/google";
 import { Inter } from "next/font/google";
 import { TopNavbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -26,13 +27,18 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <GoogleAnalytics />
       <body
-        className={`${poppins.className} antialiased bg-white`}
+        className={`${poppins.className} antialiased bg-white  text-blue-gray-900`}
       >
+        <div className="flex flex-col min-h-screen">
         <TopNavbar/>
         {children}
         <Footer/>
+        </div>
+        
       </body>
+      {/* <GoogleAnalytics gaId="G-ESYHPCFEXR" /> */}
     </html>
   );
 }

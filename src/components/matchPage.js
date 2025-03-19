@@ -66,6 +66,9 @@ const pageSlug = () => {
     useEffect(() => {
         if (!source || !id) return;
 
+        // console.log(source)
+        // console.log(id)
+
         if(dateMatch <= currentTime) {
             setLoading(true);
             fetch(`/api/stream/${source}/${id}`, {
@@ -75,6 +78,7 @@ const pageSlug = () => {
             })
                 .then(response => response.json())
                 .then(data => {
+                   // console.log(data)
                     setEmbedUrl(data[0].embedUrl);
                     setStreamData(data);
                     setLoading(false);
