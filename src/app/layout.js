@@ -30,6 +30,7 @@ export default function RootLayout({ children }) {
       <GoogleAnalytics />
       <body
         className={`${poppins.className} antialiased bg-white  text-blue-gray-900`}
+        suppressHydrationWarning={true}
       >
         <div className="flex flex-col min-h-screen">
         <TopNavbar/>

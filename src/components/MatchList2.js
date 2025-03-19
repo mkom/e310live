@@ -52,7 +52,7 @@ const fetcher = async () => {
 
 
 export function MatchList() {
-  const [dateTime, setDateTime] = useState('');
+  const [dateTime, setDateTime] = useState(null);
   const currentTime = new Date();
   const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const encodeBase64 = (str) => btoa(str);
