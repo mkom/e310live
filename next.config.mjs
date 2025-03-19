@@ -10,6 +10,9 @@ const nextConfig = {
   //     cert: fs.readFileSync('./localhost.pem'),
   //   },
   // },
+  images: {
+    domains: ["streamed.su"],
+  },
 };
 
 export default nextConfig;

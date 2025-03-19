@@ -215,8 +215,8 @@ export function MatchList() {
                       const url = `/match/${match.title.replace(/\s+/g, '-')}?id=${encodeBase64(match.id)}`; // Adjust the URL structure based on your routing
                       window.open(url, '_blank'); // Open the URL in a new tab
                     }}
-                    color={match.date >= currentTime ? "gray" : "red"}
-                    className={`text-center cursor-pointer capitalize  ${match.date >= currentTime ? "pointer-events-none !opacity-35"  : "animate-pulse"}`}
+                    color={match.date >= currentTime ? "orange" : "red"}
+                    className={`text-center cursor-pointer capitalize  ${match.date >= currentTime ? " !opacity-75"  : "animate-pulse"}`}
                   />
                 </td>
                 

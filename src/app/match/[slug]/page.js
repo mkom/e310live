@@ -11,10 +11,13 @@ export async function generateMetadata({ params,searchParams }) {
     const url = new URL(referer);
     const encodedId = searchParams?.id;
 
-    if (!encodedId) {
-      //console.error("❌ ID tidak ditemukan dalam URL query");
-      //throw new Error("Missing ID in URL");
-    }
+    // const test = searchParams?.get("id");
+    // console.log(test)
+
+    // if (!encodedId) {
+    //   //console.error("❌ ID tidak ditemukan dalam URL query");
+    //   //throw new Error("Missing ID in URL");
+    // }
 
     // Decode Base64
     const decodeBase64 = (base64Str) => {
