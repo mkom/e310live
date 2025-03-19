@@ -15,6 +15,7 @@ import {
     Button,
     CardBody,
 } from "@material-tailwind/react";
+import Link from "next/link";
 
 const pageSlug = () => {
     const searchParams = useSearchParams();
@@ -22,11 +23,12 @@ const pageSlug = () => {
     const [source, setSource] = useState(null);
     const [id, setId] = useState(null);
     const [streamData, setStreamData] = useState(null);
-    const [embedUrl, setEmbedUrl] = useState(null);
+    const [embedUrl, setEmbedUrl] = useState(1);
     const idMatch = searchParams.get("id"); 
     const [loading, setLoading] = useState(true);
     const [dateTime, setDateTime] = useState('');
     const currentTime = new Date();
+    const [eventDate, setEventDate] = useState(new Date(new Date().getTime() - 60 * 1000));
     const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const [dateMatch, setDateMatch] = useState('');
     const [kickoff, setKickoff] = useState(null);
@@ -43,6 +45,8 @@ const pageSlug = () => {
     //console.log("Decoded ID:", decodeBase64(idMatch));
 
     useEffect(() => {
+        
+        setLoading(true);
         fetch(`/api/matches/football?id=${decodeBase64(idMatch)}`, {
             headers: {
                 'x-secret-key': process.env.NEXT_PUBLIC_SECRET_KEY,
@@ -52,9 +56,10 @@ const pageSlug = () => {
             .then(data => {
                 //console.log(data)
                 setEvents(data[0]);
-                setId(data[0]?.sources[0]?.id);
-                setSource(data[0]?.sources[0]?.source);
+                setId(data[0]?.sources[0]?.id || data[1]?.sources[1]?.id);
+                setSource(data[0]?.sources[0]?.source || data[1]?.sources[1]?.source);
                 setDateMatch(data[0]?.date);
+                setEventDate(data[0]?.date);
                 setLoading(false);
             })
             .catch(error => {
@@ -68,9 +73,9 @@ const pageSlug = () => {
 
         // console.log(source)
         // console.log(id)
-
+        setLoading(true);
         if(dateMatch <= currentTime) {
-            setLoading(true);
+            setLoading(false);
             fetch(`/api/stream/${source}/${id}`, {
                 headers: {
                     'x-secret-key': process.env.NEXT_PUBLIC_SECRET_KEY,
@@ -78,8 +83,8 @@ const pageSlug = () => {
             })
                 .then(response => response.json())
                 .then(data => {
-                   // console.log(data)
-                    setEmbedUrl(data[0].embedUrl);
+                    //console.log(data)
+                    setEmbedUrl(data[0]?.embedUrl || data[1]?.embedUrl);
                     setStreamData(data);
                     setLoading(false);
                 })
@@ -107,7 +112,7 @@ const pageSlug = () => {
       }, [dateMatch,userTimeZone]);
 
 
-    if(loading) {
+    if(loading ) {
         return  <LoadingSpinner />
     }
     
@@ -125,7 +130,7 @@ const pageSlug = () => {
                     </Typography>
                     <div className="flex flex-row  gap-0 md:gap-2 md:flex-row justify-between items-center w-full bg-blue-gray-50 bg-opacity-60 py-2 px-4 rounded-md mb-5">
                         <Typography variant="h5" color="blue-gray" 
-                        className="text-md md:text-xl flex justify-center flex-row-reverse md:flex-row md:justify-end items-center gap-2 w-full md:w-11/12">
+                        className="text-md md:text-xl !leading-4 flex justify-center flex-row-reverse md:flex-row md:justify-end items-center gap-2 w-full md:w-11/12">
                             <span>{events?.teams?.home?.name || ''}</span>
                             <BadgeImage 
                                 id={events?.teams?.home?.badge ? events.teams.home.badge : ''} 
@@ -142,7 +147,7 @@ const pageSlug = () => {
                             VS
                         </Typography>
 
-                        <Typography variant="h5" color="blue-gray" className="text-md md:text-xl justify-center md:justify-start flex items-center gap-2 w-full md:w-11/12">
+                        <Typography variant="h5" color="blue-gray" className="text-md md:text-xl !leading-4 justify-center md:justify-start flex items-center gap-2 w-full md:w-11/12">
                         {/* Check if away team exists and has a badge */}
                         <BadgeImage 
                             id={events?.teams?.away?.badge ? events.teams.away.badge : ''} 
@@ -154,7 +159,7 @@ const pageSlug = () => {
                     </div>  
                 
                     <div className="flex flex-col md:flex-row items-start gap-4">
-                        {events.date >= currentTime && (
+                        {eventDate >= currentTime && (
                             <div className="w-full flex-col flex items-center justify-center">
                                 {events.poster && (
                                     <div className=" w-[400px] max-w-[400px]">
@@ -181,12 +186,12 @@ const pageSlug = () => {
                                </Typography>
 
                                <div className="flex flex-row   justify-center items-center  bg-blue-gray-50 bg-opacity-60 py-2 px-4 rounded-md my-5">
-                                <Countdown targetDate={events.date}/>
+                                <Countdown targetDate={eventDate}/>
                                </div>
                             </div>
                         )}
 
-                        {events.date <= currentTime && (
+                        {eventDate <= currentTime && (
                             <div className="w-full">
                                {embedUrl && (
                                 <div className="flex flex-col md:flex-row items-start gap-4">
@@ -225,18 +230,20 @@ const pageSlug = () => {
                                 
                                 </div>
                                 )}
+
+                                {!embedUrl &&  (
+                                    <div className="mb-4  mx-auto w-full">
+                                        <Typography variant="small" color="black" className="text-center ">
+                                            No available streams
+                                        </Typography>
+                                        <Typography as={Link} href="/" variant="small" color="black" className="text-center underline ">
+                                            Back to home
+                                        </Typography>
+                                    </div>
+                                )}
                         
                             </div>
                         )}
-
-                        {/* {!embedUrl &&  (
-                            <div className="mb-4  mx-auto w-full">
-                                <Typography variant="small" color="red" className="text-center ">
-                                    No available streams
-                                </Typography>
-                            </div>
-                        )} */}
-                        
                         
                     </div>
                 </div>

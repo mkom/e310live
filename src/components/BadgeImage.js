@@ -8,7 +8,7 @@ const BadgeImage = ({ id, alt = "Team Badge", size = 50 }) => {
  // console.log("imageUrl", imageUrl);
 
   return (
-    <div className="relative w-fit">
+    <div className="relative w-fit min-w-8">
       <Image
         src={imageUrl}
         alt={alt}
