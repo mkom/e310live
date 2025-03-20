@@ -19,7 +19,7 @@ function getNextUpdateTime() {
 
 export async function GET(req) {
   const secretKey = req.headers.get("x-secret-key");
-  
+
   if (secretKey !== process.env.SECRET_KEY) {
     return new Response("Forbidden", { status: 403 });
   }
@@ -42,7 +42,7 @@ export async function GET(req) {
   }
 
   try {
-    const response = await fetch("https://streamed.su/api/matches/football", {
+    const response = await fetch("https://streamed.su/api/matches/football/", {
       headers: {
         "Content-Type": "application/json",
       },

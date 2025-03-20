@@ -33,13 +33,17 @@ const fetcher = async () => {
     const now = Date.now();
     const twoHoursBefore = now - 2 * 60 * 60 * 1000;
     const threeHoursAfter = now + 3 * 60 * 60 * 1000;
+    const sixHoursAfter = now + 6 * 60 * 60 * 1000;
 
     const filteredMatches = data.filter(match => 
       match.sources.length > 0 && 
       match.teams && 
-      match.category === 'football' && 
-      match.date >= twoHoursBefore && 
-      match.date <= threeHoursAfter
+      match.category === 'football' &&
+      match.date >= twoHoursBefore &&
+      match.date <= sixHoursAfter
+      // match.category === 'football' && 
+      // match.date >= twoHoursBefore && 
+      // match.date <= threeHoursAfter
     )
     .sort((a, b) => a.date - b.date);
 
@@ -63,6 +67,31 @@ export function MatchList() {
   });
 
   const matches = data || [];
+
+  //console.log(matches)
+
+  const groupByDate = (events) => {
+    if (!Array.isArray(events)) {
+        console.error("Invalid data: Expected an array");
+        return {};
+    }
+    
+    return events.reduce((acc, event) => {
+        const date = new Date(event.date).toLocaleDateString(undefined, {
+            day: "2-digit",
+            month: "long",
+            year: "numeric"
+        });
+        if (!acc[date]) {
+            acc[date] = [];
+        }
+        acc[date].push(event);
+        return acc;
+    }, {});
+  };
+
+  //console.log(groupByDate(matches));
+  const groupedMatches = groupByDate(matches);
 
   useEffect(() => {
       const interval = setInterval(() => {
@@ -101,6 +130,7 @@ export function MatchList() {
           hour12: false
       });
   };
+  
 
  if (!loading) return <LoadingSpinner/>
 
@@ -139,7 +169,7 @@ export function MatchList() {
         <table className="mt-1 w-full table-auto text-left">
           <thead>
             <tr>
-              <th colSpan={3} className=" border-y text-start border-blue-gray-100 bg-blue-gray-50/50 p-2">
+              <th colSpan={3} className=" border-y text-center border-blue-gray-100 bg-blue-gray-50/50 p-2">
                   <Typography
                       className="font-bold uppercase leading-none text-base text-neutral-600 opacity-1"
                   >
@@ -161,7 +191,91 @@ export function MatchList() {
                 </td>
               </tr>
             )}
-            {matches.map((match, index) => (
+
+            {Object.entries(groupedMatches).map(([date, matches]) => (
+                <React.Fragment key={date}>
+                    <tr key={`header-${date}`} className="bg-gray-200">
+                        <td colSpan={3}  className="text-right font-bold bg-green-400 text-white px-3 py-2 ">{date}</td>
+                        {/* <td  className="text-center font-bold bg-green-500 text-white p-2 hidden md:table-cell w-11/12">{date}</td>
+                        <td  className="text-center font-bold bg-green-500 p-2 hidden md:table-cell w-1/6"></td>
+                        <td  className="text-center font-bold bg-green-500 p-2 hidden md:table-cell w-1/6"></td> */}
+                    </tr>
+                    {matches.map((match, index) => (
+                        <tr key={index}>
+                            <td className="border-y w-11/12 border-blue-gray-100 py-2 pl-2 pr-0">
+                                <div className="flex justify-start md items-center gap-2  md:gap-3">
+                                    <div className="flex w-full flex-col md:flex-row items-start md:items-center justify-start md:justify-between gap-1  md:gap-3">
+                                        <Typography
+                                            variant="h6"
+                                            className="font-medium text-blue-gray-500 flex justify-start md:justify-end items-center gap-2 w-full md:w-11/12"
+                                        >
+                                            <span className="flex items-center gap-2 md:flex-row-reverse">
+                                                <BadgeImage id={match?.teams?.home?.badge || ''} size={35} alt={match?.teams?.home?.name || ''} />
+                                                <span className="text-sm md:text-base !leading-5 ">{match?.teams?.home?.name || ''}</span>
+                                            </span>
+                                        </Typography>
+
+                                        <Chip
+                                            variant="ghost"
+                                            size="sm"
+                                            value="VS"
+                                            color="orange"
+                                            className="text-center hidden md:block w-1/12"
+                                        />
+
+                                        <Typography
+                                            variant="h6"
+                                            className="font-medium text-blue-gray-500 flex items-center gap-2 w-full md:w-11/12"
+                                        >
+                                            <span className="flex items-center gap-2">
+                                                <BadgeImage id={match?.teams?.away?.badge || ''} size={35} alt={match?.teams?.away?.name || ''} />
+                                                <span className="text-sm md:text-base !leading-5 ">{match?.teams?.away?.name || ''}</span>
+                                            </span>
+                                        </Typography>
+                                    </div>
+                                </div>
+                            </td>
+                            <td className="border-y w-1/6 border-blue-gray-100 p-2">
+                                <div className="flex gap-2 justify-end">
+                                  {match.date <= Date.now() &&(
+                                    <Chip
+                                    variant="ghost"
+                                    size="sm"
+                                    value={`Live`}
+                                    color="red"
+                                    className="text-center"
+                                    />
+                                  )}
+                                 
+                                  <Chip
+                                      variant="ghost"
+                                      size="sm"
+                                      value={formatTime(match.date)}
+                                      color="blue"
+                                      className="text-center"
+                                  />
+                                </div>
+                            </td>
+                            <td className="border-y w-1/6 border-blue-gray-100 p-2">
+                                <Chip
+                                    variant="ghost"
+                                    size="sm"
+                                    value="watch"
+                                    icon={<PlayIcon className="w-4 h-4" />}
+                                    onClick={() => {
+                                        const url = `/match/${match.title.replace(/\s+/g, '-')}?id=${encodeBase64(match.id)}`;
+                                        window.open(url, '_blank');
+                                    }}
+                                    color={match.date >= Date.now() ? "orange" : "red"}
+                                    className={`text-center cursor-pointer capitalize ${match.date >= Date.now() ? "!opacity-75" : "animate-pulse"}`}
+                                />
+                            </td>
+                        </tr>
+                    ))}
+                </React.Fragment>
+            ))}
+
+            {/* {matches.map((match, index) => (
               <tr key={index} >
                 <td className="border-y w-11/12  border-blue-gray-100 py-2 pl-2 pr-0">
                   <div className="flex  justify-start md items-center gap-3">
@@ -221,7 +335,8 @@ export function MatchList() {
                 </td>
                 
               </tr>
-            ))}
+            ))} */}
+
           </tbody>
           
         </table>
