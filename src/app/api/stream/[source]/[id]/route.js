@@ -1,29 +1,49 @@
 import { NextResponse } from "next/server";
 
-const CACHE_DURATION = 6 * 60 * 60 * 1000; // 6 jam dalam milidetik
-const cache = new Map(); // Simpan cache di memori
+let cachedData = null;
+let lastFetchTime = 0;
+
+function getNextUpdateTime() {
+  const now = new Date();
+  const nextUpdate = new Date(now);
+
+  nextUpdate.setHours(0, 30, 0, 0); // Set waktu ke 00:30
+
+  if (now > nextUpdate) {
+    // Jika sudah lewat 00:30 hari ini, set ke 00:30 besok
+    nextUpdate.setDate(nextUpdate.getDate() + 1);
+  }
+
+  return nextUpdate.getTime(); // Timestamp dalam milidetik
+}
 
 export async function GET(req, { params }) {
-    const secretKey = req.headers.get('x-secret-key');
-    if (secretKey !== process.env.SECRET_KEY) {
-        return new Response('Forbidden', { status: 403 });
-    }
+  const secretKey = req.headers.get('x-secret-key');
+
+  if (secretKey !== process.env.SECRET_KEY) {
+      return new Response('Forbidden', { status: 403 });
+  }
+
   const { source, id } = params;
 
   if (!source || !id) {
     return NextResponse.json({ error: "Missing source or id" }, { status: 400 });
   }
 
-  const cacheKey = `${source}/${id}`;
   const currentTime = Date.now();
-
-  // Cek apakah data ada di cache dan masih valid
-  if (cache.has(cacheKey)) {
-    const { data, timestamp } = cache.get(cacheKey);
-    if (currentTime - timestamp < CACHE_DURATION) {
-      return NextResponse.json(data);
+  const nextUpdateTime = getNextUpdateTime();
+  if (cachedData && currentTime < nextUpdateTime) {
+    if (id) {
+      const filteredData = cachedData.filter((match) => match.id === id);
+      if (filteredData.length === 0) {
+        return NextResponse.json({ error: "Match not found" }, { status: 404 });
+      }
+      return NextResponse.json(filteredData);
     }
+
+    return NextResponse.json(cachedData);
   }
+  
 
   try {
     const response = await fetch(`https://streamed.su/api/stream/${source}/${id}`, {
@@ -36,12 +56,11 @@ export async function GET(req, { params }) {
       throw new Error(`Failed to fetch stream data: ${response.status}`);
     }
 
-    const data = await response.json();
-
-    // Simpan ke cache
-    cache.set(cacheKey, { data, timestamp: currentTime });
-
-    return NextResponse.json(data);
+    cachedData = await response.json();
+    lastFetchTime = currentTime;
+    
+    return NextResponse.json(cachedData);
+    
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

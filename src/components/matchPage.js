@@ -23,7 +23,7 @@ const pageSlug = () => {
     const [source, setSource] = useState(null);
     const [id, setId] = useState(null);
     const [streamData, setStreamData] = useState(null);
-    const [embedUrl, setEmbedUrl] = useState(1);
+    const [embedUrl, setEmbedUrl] = useState(null);
     const idMatch = searchParams.get("id"); 
     const [loading, setLoading] = useState(true);
     const [dateTime, setDateTime] = useState('');
