@@ -2,19 +2,10 @@ import { NextResponse } from "next/server";
 
 let cachedData = null;
 let lastFetchTime = 0;
+const UPDATE_INTERVAL = 60 * 60 * 1000; // 1 jam dalam milidetik
 
 function getNextUpdateTime() {
-  const now = new Date();
-  const nextUpdate = new Date(now);
-
-  nextUpdate.setHours(0, 30, 0, 0); // Set waktu ke 00:30
-
-  if (now > nextUpdate) {
-    // Jika sudah lewat 00:30 hari ini, set ke 00:30 besok
-    nextUpdate.setDate(nextUpdate.getDate() + 1);
-  }
-
-  return nextUpdate.getTime(); // Timestamp dalam milidetik
+  return lastFetchTime + UPDATE_INTERVAL;
 }
 
 export async function GET(req, { params }) {
@@ -24,6 +15,7 @@ export async function GET(req, { params }) {
       return new Response('Forbidden', { status: 403 });
   }
 
+
   const { source, id } = params;
 
   if (!source || !id) {
@@ -32,6 +24,7 @@ export async function GET(req, { params }) {
 
   const currentTime = Date.now();
   const nextUpdateTime = getNextUpdateTime();
+  
   if (cachedData && currentTime < nextUpdateTime) {
     if (id) {
       const filteredData = cachedData.filter((match) => match.id === id);
@@ -65,3 +58,4 @@ export async function GET(req, { params }) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+

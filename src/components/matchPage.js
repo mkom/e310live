@@ -42,6 +42,16 @@ const pageSlug = () => {
         }
     };
 
+    const [showIframe, setShowIframe] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+        setShowIframe(true);
+        }, 2000);
+
+        return () => clearTimeout(timer); // Cleanup jika komponen unmount
+    }, []);
+
     //console.log("Decoded ID:", decodeBase64(idMatch));
 
     useEffect(() => {
@@ -196,7 +206,17 @@ const pageSlug = () => {
                                {embedUrl && (
                                 <div className="flex flex-col md:flex-row items-start gap-4">
                                     <div className="mb-5 mx-auto w-full md:w-3/4 ">
-                                        <div dangerouslySetInnerHTML={{ __html: `<iframe src="${embedUrl ? embedUrl : ""}" allow="picture-in-picture; fullscreen" allowfullscreen class="w-full h-48 sm:h-80 md:h-[460px]"></iframe>` }} />
+
+                                    {!showIframe ? (
+                                        <LoadingSpinner/>
+                                    ) : (
+                                        <div
+                                        dangerouslySetInnerHTML={{
+                                            __html: `<iframe src="${embedUrl ? embedUrl : ""}" allow="picture-in-picture; fullscreen" allowfullscreen class="w-full h-48 sm:h-80 md:h-[460px]"></iframe>`,
+                                        }}
+                                        />
+                                    )}
+                                    
                                     </div>
                                     <Card className="h-full w-full md:w-1/4 border rounded-none">
                                         <CardHeader floated={false} shadow={false} className="rounded-none">
